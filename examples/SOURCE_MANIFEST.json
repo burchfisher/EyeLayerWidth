@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-14",
+  "sourceCitation": "Leach, Fisher, Gross (2022), JoVE, doi:10.3791/63658",
+  "transformation": "Retain IMG, IMGname, ROIxy, ROIBW and CLine x/y/distance/angle without resampling or coordinate changes; omit intensity arrays.",
+  "groups": [
+    {
+      "file": "DMSO_4dpi.mat",
+      "sourceFile": "JoVE_dataset/Output/DMSO_4dpi.mat",
+      "sourceSHA256": "e8854faf9247ddd3c49e38b796cb9bde01db766a7afca5fb13b799fbd098bf43",
+      "geometrySHA256": "7e12f2dfbf6e1d487f3b278c6a23d0283dce114c6358aaa42b247c3510099da0"
+    },
+    {
+      "file": "IWR1_4dpi.mat",
+      "sourceFile": "JoVE_dataset/Output/IWR1_4dpi.mat",
+      "sourceSHA256": "726dfcff6806bb6a52b903548795d6286bc5e88d2f85d602d30ecd8baf63a1d8",
+      "geometrySHA256": "4198421dba574f88300a1e618f723c4fa882077bbda270afe7d696fc99826d6c"
+    },
+    {
+      "file": "DMSO_9dpf.mat",
+      "sourceFile": "JoVE_dataset/Output/DMSO_9dpf.mat",
+      "sourceSHA256": "d4c1b4e17f8b9f080df90edecb507b27393009283e109e68d36a33bcc9f64baa",
+      "geometrySHA256": "96e9b8ebb7979571ad0c65065e7a802d3f03ff12d3080f9efa3807c007d797a4"
+    },
+    {
+      "file": "IWR1_9dpf.mat",
+      "sourceFile": "JoVE_dataset/Output/IWR1_9dpf.mat",
+      "sourceSHA256": "6dbb923b8ab2c462b28be8a67ec7a7d69bb5dd9ec29aef4f43b6234e8fcf3c66",
+      "geometrySHA256": "915eb7dcb6ab5b851762a98c67ce9e5f41e4db330de3b03878fcf1eea4d8fbab"
+    }
+  ]
+}

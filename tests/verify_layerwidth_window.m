@@ -1,0 +1,80 @@
+function verify_layerwidth_window
+root = fileparts(fileparts(mfilename('fullpath'))); addpath(root);
+file = fullfile(root,'examples','DMSO_4dpi.mat'); loaded = load(file); data = loaded.DMSO_4dpi;
+original = data; fields = {'IMG','IMGname','ROIxy','ROIBW','CLine'};
+for field = fields, data.(field{1}) = data.(field{1})(1:3); end
+initialRng = rng;
+fig = uifigure('Visible','off','Position',[100 100 1180 780]); cleanup = onCleanup(@() delete(fig));
+grid = uigridlayout(fig,[1 1]); tabs = uitabgroup(grid); tab = uitab(tabs,'Title','Widths');
+api = layerwidth_workspace(tab,root); api.SetData(data,file); api.Activate();
+window = findall(fig,'Tag','WidthWindow'); ends = findall(fig,'Tag','WidthExcludeEnds');
+assert(window.Value==25 && ~ends.Value);
+assert(strcmp(findall(fig,'Tag','WidthHalfWindow').Text,'+/- 12.5 px'));
+api.MeasureAll(); [results25,details25,summary] = api.GetResults();
+assert(height(summary)==3 && all(~cellfun(@isempty,results25)));
+for k = 1:3
+    assert(details25{k}.LocalNormal.WindowLength==25);
+    assert(all(results25{k}.LocalWindowTotalPx==25));
+    assert(summary.ShortWindowPoints(k)>0);
+    bins = layerwidth_bins(results25{k},5,false,'local');
+    assert(sum(bins.Points)==nnz(results25{k}.LocalValid));
+end
+axis = findall(fig,'Tag','WidthImageAxes'); limits = [axis.XLim;axis.YLim];
+window.Value = 50; feval(window.ValueChangedFcn,window,[]);
+[results50,details50,summary] = api.GetResults();
+assert(~isempty(results50{1}) && all(cellfun(@isempty,results50(2:end))) && height(summary)==1);
+assert(details50{1}.LocalNormal.WindowLength==50 && all(results50{1}.LocalWindowTotalPx==50));
+assert(isequal(limits,[axis.XLim;axis.YLim]));
+assert(strcmp(findall(fig,'Tag','WidthHalfWindow').Text,'+/- 25 px'));
+assert(any(abs(results25{1}.LocalWidthPx-results50{1}.LocalWidthPx)>.01));
+expected = layerwidth_local_normal(data.ROIxy{1},logical(data.ROIBW{1}),data.CLine{1},50);
+assert(isequaln(expected.Width,results50{1}.LocalWidthPx));
+bins = layerwidth_bins(results50{1},5,false,'local');
+curve = findall(fig,'Tag','WidthLocalProfile'); assert(isscalar(curve));
+assert(isequal(curve.XData(:),(0:5:180)'));
+assert(isequaln(curve.YData(:),[bins.LocalMedianPx;bins.LocalMedianPx(end)]));
+assert(isscalar(findall(fig,'Tag','WidthFitWindow')));
+assert(isscalar(findall(fig,'Tag','WidthLocalSection')));
+api.SetBusy(true); assert(strcmp(window.Enable,'off'));
+window.Value = 75; feval(window.ValueChangedFcn,window,[]); assert(window.Value==50);
+api.SetBusy(false); assert(strcmp(window.Enable,'on'));
+
+matfile = fullfile(tempdir,'rpegen_local_widths.mat'); csvfile = fullfile(tempdir,'rpegen_local_widths.csv');
+api.Export(matfile); api.Export(csvfile); saved = load(matfile);
+assert(saved.metadata.LocalWindowTotalPx==50 && saved.metadata.LocalWindowHalfPx==25);
+assert(~saved.metadata.ExcludeEndRegions && strcmp(saved.metadata.LocalDistanceMetric,'euclidean'));
+assert(all(saved.measurements.LocalWindowTotalPx==50));
+assert(isequal(saved.measurements.IncludedInProfile,saved.measurements.LocalValid));
+assert(strcmp(saved.metadata.PrimaryMethod,'local-normal'));
+assert(isequal(saved.metadata.IQRPercentiles,[25 75]) && saved.metadata.IQRMinPoints==2);
+assert(height(saved.profiles)==3*36);
+expectedBins = layerwidth_bins(results50{1},5,false,'local');
+assert(isequaln(saved.profiles.LocalQ25Px(1:36),expectedBins.LocalQ25Px));
+assert(isequaln(saved.profiles.LocalQ75Px(1:36),expectedBins.LocalQ75Px));
+assert(any(saved.measurements.IncludedInProfile & saved.measurements.LocalWindowShortened));
+csv = readtable(csvfile); assert(all(csv.LocalWindowTotalPx==50));
+assert(all(string(csv.LocalDistanceMetric)=="euclidean"));
+assert(all(string(csv.LocalWindowUnits)=="pixel-distance"));
+window.Value = 25; feval(window.ValueChangedFcn,window,[]);
+[again,~,~] = api.GetResults(); assert(isequaln(again{1}.LocalWidthPx,results25{1}.LocalWidthPx));
+assert(all(cellfun(@isempty,again(2:end))));
+ends.Value = true; feval(ends.ValueChangedFcn,ends,[]);
+bins = layerwidth_bins(again{1},5,true,'local');
+curve = findall(fig,'Tag','WidthLocalProfile');
+assert(isequaln(curve.YData(:),[bins.LocalMedianPx;bins.LocalMedianPx(end)]));
+ends.Value = false; feval(ends.ValueChangedFcn,ends,[]);
+iqrToggle = findall(fig,'Tag','WidthIQR'); iqrToggle.Value = true;
+feval(iqrToggle.ValueChangedFcn,iqrToggle,[]);
+api.ExportFigure(fullfile(root,'comparison_preview','local_normal_gui_export.pdf'));
+api.ExportFigure(fullfile(tempdir,'rpegen_local_normal_gui.pdf'));
+assert(isequaln(original,loaded.DMSO_4dpi) && isequal(initialRng,rng));
+clear cleanup;
+
+fig = EyeLayerWidth_GUI('ResultsFile',file); cleanup = onCleanup(@() delete(fig));
+assert(findall(fig,'Tag','WidthWindow').Value==25);
+iqrToggle = findall(fig,'Tag','WidthIQR'); iqrToggle.Value = true;
+feval(iqrToggle.ValueChangedFcn,iqrToggle,[]);
+drawnow; pause(1); drawnow;
+exportapp(fig,fullfile(root,'comparison_preview','local_normal_gui.png'));
+disp('Local-normal GUI passed: defaults, window changes, cache invalidation, exact plotted values, tip retention, busy state, CSV/MAT/figure exports, and main-app integration.');
+end
