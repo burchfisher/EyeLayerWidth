@@ -20,7 +20,9 @@ Learning Toolbox are required. No GPU or parallel pool is required.
 No toolboxes are installed automatically.
 
 1. Click **Example Groups** to load the four bundled groups, or **Add Groups...**
-   to select compatible geometry MATs or full RpEGEN group MATs.
+   to select compatible geometry MAT files or full
+   [RpEGEN](https://github.com/burchfisher/RpEGEN) group MAT files. Existing images,
+   ROI polygons, and saved centerlines can be reused without redrawing ROIs.
 2. Inspect **Profiles**, **Measurements**, and **Eye Summary**. Visiting an eye
    measures it automatically. **Measure N More** measures the remaining eyes.
 3. Open **Group Profiles** and click **Plot Groups**. All selected groups appear
@@ -40,7 +42,7 @@ confidence bands. **Clear Groups** discards session caches, never input files.
 - Linked image inspection, raw profiles, angular-bin median steps, and optional
   within-eye IQR blocks. Entire images remain visible before zooming.
 - Eye Summary and per-point geometry tables; current-eye and all-eye PDF export.
-- Group Profiles pool centerline widths within each angular bin, not eye medians.
+- The Group Profiles view pools centerline widths within each angular bin, not eye medians.
   Eyes contributing more points receive more weight.
 - Independently toggleable **point-based median CI (nominal 95%)** and
   **whole-eye bootstrap CI (95%)**, with 5,000 bootstrap draws. The same whole-eye
@@ -83,11 +85,8 @@ folder; they do not change bundled inputs.
 
 ## Attribution
 
-The example dataset and source image-processing workflow are from RpEGEN:
-Leach, Fisher, and Gross (2022), JoVE,
-DOI: [10.3791/63658](https://doi.org/10.3791/63658). That article does not describe
-EyeLayerWidth's local-normal width method or bootstrap displays.
-Code derived from RpEGEN retains its GPL-3.0 license; see [LICENSE](LICENSE).
+See [Attribution](docs/ATTRIBUTION.md) for source-code credits and the example-data
+citation. The code is distributed under the [GPL-3.0 license](LICENSE).
 
 This is research software under active development. The bundled examples and
 tests check software behavior; users should validate measurements for their
