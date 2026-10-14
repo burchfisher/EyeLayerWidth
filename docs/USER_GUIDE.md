@@ -4,14 +4,54 @@ EyeLayerWidth measures tissue-layer widths, displays each measurement on the
 eye image, and compares width profiles across treatment groups. This guide
 covers loading data, reviewing measurements, interpreting plots, and exporting results.
 
-## Start and Load Groups
+## Contents
 
-In MATLAB, change the Current Folder to EyeLayerWidth and run `EyeLayerWidth_GUI`.
-Click **Example Groups** to load all four test groups. There is no Setup analysis
-step: the bundled MATs already contain images, polygons, and centerlines.
+- [Installation and launch](#installation-and-launch)
+- [MATLAB GUI workflow](#matlab-gui)
+- [Load groups and measurement settings](#load-groups-and-measurement-settings)
+- [Profiles](#profiles)
+- [Measurements](#measurements)
+- [Eye Summary](#eye-summary)
+- [Group Profiles](#group-profiles)
+- [Save a reproducible analysis](#save-a-reproducible-analysis)
+- [Troubleshooting](#troubleshooting)
+
+## Installation and Launch
+
+Download and extract the repository, or clone it with Git. Keep the project
+folders together, including `examples`. Tested with MATLAB R2026b; Image
+Processing Toolbox and Statistics and Machine Learning Toolbox are required.
+No GPU or parallel pool is required, and no toolboxes are installed automatically.
+
+In MATLAB, set the Current Folder to EyeLayerWidth and run:
+
+```matlab
+EyeLayerWidth_GUI
+```
+
+After a code update, close and relaunch the GUI to load the new callbacks.
+
+## MATLAB GUI
+
+Load groups and check the shared settings first. Then follow the four views
+from left to right: **Profiles > Measurements > Eye Summary > Group Profiles**.
+The first three inspect the current group; Group Profiles compares selected groups.
+
+**There is no Run Analysis step.** Visiting an eye measures it automatically.
+The bundled MATs already contain the images, polygons, and centerlines needed
+for width measurements.
+
+The top-right **?** opens help for whichever of the four views is selected.
+Click it again after switching views to update the help window.
+
+### Load Groups and Measurement Settings
+
+#### Load Groups
+
+Click **Example Groups** to load all four test groups.
 
 **Add Groups...** accepts multiple MAT files at once, one group per file. Load
-full RpEGEN results or the geometry format documented in `examples/README.md`.
+full RpEGEN results or the [documented geometry format](../examples/README.md).
 Paths are deduplicated, not file contents: do not load two copies of the same
 group as independent treatments. Malformed inputs are rejected before the
 session's group list is changed.
@@ -23,24 +63,7 @@ to a named eye. Navigation stops at the first and last eye and is inactive in Gr
 Profiles. Arrow keys retain normal editing and selection behavior in input controls;
 click an image or navigation button to resume eye navigation.
 
-The top-right **?** opens help for whichever of the four views is selected.
-Click it again after switching views to update the help window.
-
-## Profiles
-
-The image shows the polygon in purple, centerline in green, fitted window in
-gold, and measured cross-section in blue. The full stored image is displayed
-initially. The plot shows individual local-normal widths in gray and binned
-medians as blue steps. Click the plot to select a real measurement and see its
-position and cross-section on the image. A bin median is a summary, not a new
-geometric measurement. **QC angle** selects the nearest saved angular position.
-
-**Show within-bin IQR** adds optional blocks from the 25th to 75th percentiles
-of measurements within that eye and angular bin. This describes spatial
-variation, not confidence in a treatment-group median. Fewer than two included
-points gives no IQR block. Selecting measurements preserves current image zoom.
-
-## Measurement Settings
+#### Measurement Settings
 
 **Total window (px)** defaults to **25 total**, not 25 each side. A local trend is
 fitted using 12.5 Euclidean pixel-distance units before and after the centerline
@@ -64,7 +87,29 @@ magnification are not used to infer physical calibration. Compare groups only
 at matching pixel sizes. Programmatic `layerwidth_local_normal` supports explicit
 x/y pixel sizes, but that does not calibrate the GUI automatically.
 
-## Measurements and Eye Summary
+Next, use **Profiles** to check measurements against the image.
+
+### Profiles
+
+The image shows the polygon in purple, centerline in green, fitted window in
+gold, and measured cross-section in blue. The full stored image is displayed
+initially. The plot shows individual local-normal widths in gray and binned
+medians as blue steps. Click the plot to select a real measurement and see its
+position and cross-section on the image. A bin median is a summary, not a new
+geometric measurement. **QC angle** selects the nearest saved angular position.
+
+**Show within-bin IQR** adds optional blocks from the 25th to 75th percentiles
+of measurements within that eye and angular bin. This describes spatial
+variation, not confidence in a treatment-group median. Fewer than two included
+points gives no IQR block. Selecting measurements preserves current image zoom.
+
+**Export Figure...** offers Current Eye or All Eyes. All Eyes produces one PDF
+per eye in the selected folder with matching window, bin, exclusion, and IQR
+settings. Existing files require confirmation in the GUI.
+
+Next, open **Measurements** to inspect the per-point values and validity flags.
+
+### Measurements
 
 **Measurements** lists individual centerline points, angles, coordinates,
 widths, fit diagnostics, and validity flags. `LocalWidthPx` is the full section;
@@ -73,6 +118,16 @@ widths, fit diagnostics, and validity flags. `LocalWidthPx` is the full section;
 `LocalValid` marks usable geometry. Invalid rows remain exported but are excluded
 from profiles; they are not replaced with zeros. The help window defines each
 displayed measurement column.
+
+The individual-eye toolbar's **Export Results...** measures remaining eyes and
+exports the entire current group. CSV contains per-point measurements; MAT also
+contains binned profiles, Eye Summary, and method/settings metadata. Development
+reference columns for distance-times-two and angle-fixed widths remain in exports
+but do not control inclusion of local-normal widths.
+
+Next, open **Eye Summary** for one row per measured eye.
+
+### Eye Summary
 
 **Eye Summary** includes only eyes already measured:
 
@@ -90,7 +145,10 @@ an eye measures it automatically, so a visible profile does not imply all other
 eyes have been measured. When complete, the button reads **All Eyes Measured**.
 Changing bins or IQR display does not change this summary.
 
-## Group Profiles and Confidence Bands
+Use the same **Export Results...** for full-group outputs; the MAT includes this
+summary. Next, open **Group Profiles** to compare treatments.
+
+### Group Profiles
 
 Choose **Group Profiles**, select the groups' **Show** checkboxes, and click
 **Plot Groups**. Group names can be edited for display and export. Each curve
@@ -122,22 +180,12 @@ until **Plot Groups** is run again. Geometry is reused when possible. CI toggles
 change display only. No width p-value test is included, and CI overlap alone is
 not a treatment significance test.
 
-## Export and Reproduce
-
-Individual **Export Results...** measures remaining eyes and exports the entire
-current group. CSV contains per-point measurements; MAT also contains binned
-profiles, Eye Summary, and method/settings metadata. Development reference
-columns for distance-times-two and angle-fixed widths remain in exports but do
-not control inclusion of local-normal widths.
-
-Individual **Export Figure...** offers Current Eye or All Eyes. All Eyes produces
-one PDF per eye in the selected folder with matching window, bin, exclusion, and
-IQR settings. Existing files require confirmation in the GUI.
-
 Group **Export PDF...** saves the selected group curves and visible CI bands in
 one figure. Group **Export Results...** writes CSV/MAT with both sets of CI limits,
 even if one band is hidden, plus counts, source paths, fitting settings,
 bootstrap seed, and draw count. Exported MATs are results, not reloadable sessions.
+
+## Save a Reproducible Analysis
 
 PDF text, lines, and bands are vector elements; image layers remain raster.
 Save both numerical outputs and source geometry files to reproduce an analysis.
