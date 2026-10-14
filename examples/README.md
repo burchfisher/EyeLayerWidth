@@ -11,8 +11,8 @@ The four MATs are geometry-only copies of the RpEGEN JoVE example groups:
 
 Images, sample names, polygon coordinates, masks, and centerline x/y/distance/angle
 columns are unchanged. Intensity pixel arrays and intensity summaries are omitted.
-The original RpEGEN MATs are untouched. These data test software behavior; they
-are not photoreceptor data or evidence of biological validation for another layer.
+These data test software behavior; they are not photoreceptor data or evidence
+of biological validation for another layer.
 See `SOURCE_MANIFEST.json` for source and derived-file SHA-256 identities.
 
 ## Input Format
@@ -34,8 +34,8 @@ with their masks. Detailed geometry checks occur during measurement.
 
 Full compatible RpEGEN group MATs also work; additional fields are ignored.
 Permutation exports, width exports, and `_run.mat` metadata files are not geometry
-inputs. Input files are read-only during analysis. Loading does not run intensity
-analysis and does not need the RpEGEN code.
+inputs. Input files are read-only during analysis. Geometry is loaded directly;
+no intensity analysis or additional application is required.
 
 Source dataset: Leach, Fisher, and Gross (2022), JoVE,
 [DOI 10.3791/63658](https://doi.org/10.3791/63658), distributed with RpEGEN.

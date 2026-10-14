@@ -1,8 +1,8 @@
 # EyeLayerWidth User Guide
 
-This guide describes the 2026-10-14 standalone development version. EyeLayerWidth
-retains the width-analysis capabilities previously integrated into RpEGEN, but
-has its own GUI, data-loading controls, and repository.
+EyeLayerWidth measures tissue-layer widths, displays each measurement on the
+eye image, and compares width profiles across treatment groups. This guide
+covers loading data, reviewing measurements, interpreting plots, and exporting results.
 
 ## Start and Load Groups
 
@@ -100,7 +100,7 @@ has more weight. The same settings apply across selected groups.
 
 The two confidence bands can be checked on or off independently:
 
-- **Point-based median CI (nominal 95%)** uses the original median-rank approach
+- **Point-based median CI (nominal 95%)** uses a median-rank approach
   applied to width measurements. It treats points as independent and can be very
   narrow when many correlated points come from only a few eyes.
 - **Whole-eye bootstrap CI (95%)** resamples entire eyes with replacement 5,000

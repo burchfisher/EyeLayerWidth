@@ -1,8 +1,7 @@
 # EyeLayerWidth
 
-EyeLayerWidth measures tissue-layer width from image polygons and saved centerlines.
-It is a standalone MATLAB application separated from the width development work
-in RpEGEN on 2026-10-14. Its intended applications include photoreceptor
+EyeLayerWidth is a MATLAB application for measuring eye tissue-layer width from
+image polygons and saved centerlines. Its intended applications include photoreceptor
 regeneration; the bundled RPE images are test data, not validation in photoreceptors.
 
 ## Launch
@@ -17,8 +16,8 @@ EyeLayerWidth_GUI
 ```
 
 Tested with MATLAB R2026b. Image Processing Toolbox and Statistics and Machine
-Learning Toolbox are required. No RpEGEN installation, GRAMM, GPU, or parallel
-pool is required. No toolboxes are installed automatically.
+Learning Toolbox are required. No GPU or parallel pool is required.
+No toolboxes are installed automatically.
 
 1. Click **Example Groups** to load the four bundled groups, or **Add Groups...**
    to select compatible geometry MATs or full RpEGEN group MATs.
@@ -32,7 +31,7 @@ pool is required. No toolboxes are installed automatically.
 The **?** button explains the currently selected view, controls, columns, and
 confidence bands. **Clear Groups** discards session caches, never input files.
 
-## Preserved Analysis
+## Analysis Features
 
 - Local-normal polygon cross-sections at each centerline point, using true
   Euclidean distance. Default fitting window: **25 total pixel-distance units**,
@@ -57,10 +56,10 @@ group significance test. No width permutation test is implemented.
 
 - [User Guide](docs/USER_GUIDE.md)
 - [Input Format and Example Provenance](examples/README.md)
-- [Migration and Verification](docs/MIGRATION.md)
-- [Historical Width Development Notes](docs/WIDTH_METHOD_HISTORY.md)
+- [Measurement Method](docs/MEASUREMENT_METHOD.md)
+- [Validation and Tests](docs/VALIDATION.md)
 
-The first standalone version imports saved geometry. It does not yet generate
+EyeLayerWidth imports saved geometry. It does not yet generate
 centerlines from new image/ROI pairs or offer segmentation tools.
 
 ## Tests
@@ -84,11 +83,11 @@ folder; they do not change bundled inputs.
 
 ## Attribution
 
-Derived from the width-analysis additions developed alongside RpEGEN, whose
-published image workflow is Leach, Fisher, and Gross (2022), JoVE,
-DOI: [10.3791/63658](https://doi.org/10.3791/63658). The new local-normal width
-method and bootstrap displays are not methods published in that article.
-The included GPL-3.0 license is retained from the source project.
+The example dataset and source image-processing workflow are from RpEGEN:
+Leach, Fisher, and Gross (2022), JoVE,
+DOI: [10.3791/63658](https://doi.org/10.3791/63658). That article does not describe
+EyeLayerWidth's local-normal width method or bootstrap displays.
+Code derived from RpEGEN retains its GPL-3.0 license; see [LICENSE](LICENSE).
 
 This is research software under active development. The bundled examples and
 tests check software behavior; users should validate measurements for their
